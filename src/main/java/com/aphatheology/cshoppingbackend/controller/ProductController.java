@@ -3,8 +3,10 @@ package com.aphatheology.cshoppingbackend.controller;
 import com.aphatheology.cshoppingbackend.dto.ApiResponse;
 import com.aphatheology.cshoppingbackend.dto.ProductDto;
 import com.aphatheology.cshoppingbackend.entity.Products;
+import com.aphatheology.cshoppingbackend.entity.Tags;
 import com.aphatheology.cshoppingbackend.exception.BadRequestException;
 import com.aphatheology.cshoppingbackend.exception.ExistingEmailException;
+import com.aphatheology.cshoppingbackend.exception.ResourceNotFoundException;
 import com.aphatheology.cshoppingbackend.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -36,13 +38,51 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse> getProducts() {
+    public ResponseEntity<ApiResponse> getProducts(@RequestParam(required = false) List<Tags> tags) {
         try {
-            List<Products> products = this.productService.getProducts();
+            List<Products> products;
+
+            if (tags != null && !tags.isEmpty()) {
+                products = this.productService.getProductsByTags(tags);
+            } else {
+                products = this.productService.getProducts();
+            }
 
             return new ResponseEntity<>(new ApiResponse(true, "Product Fetched Successfully", products), HttpStatus.OK);
         } catch(BadRequestException e) {
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("/{productId}")
+    public ResponseEntity<ApiResponse> getProductById(@PathVariable Long productId) {
+        try {
+            Products product = this.productService.getProductById(productId);
+
+            return new ResponseEntity<>(new ApiResponse(true, "Fetch Product by Id Successful", product), HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<ApiResponse> deleteProduct(@PathVariable Long productId) {
+        try {
+            this.productService.deleteProduct(productId);
+            return ResponseEntity.ok(new ApiResponse(true, "Product deleted successfully"));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(false, e.getMessage()));
+        }
+    }
+
+    @PutMapping("/{productId}")
+    public ResponseEntity<ApiResponse> updateProduct(@PathVariable Long productId, @RequestPart(required = false, name = "product") ProductDto productDto, @RequestPart(required = false, name = "imageList") MultipartFile[] files) {
+        try {
+            Products product = productService.updateProduct(productId, productDto, files);
+            return ResponseEntity.ok(new ApiResponse(true, "Product updated successfully", product));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(false, e.getMessage()));
+        }
+    }
+
 }
