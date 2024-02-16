@@ -1,12 +1,13 @@
 package com.aphatheology.cshoppingbackend.repository;
 
+import com.aphatheology.cshoppingbackend.entity.Images;
 import com.aphatheology.cshoppingbackend.entity.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface UserRepository extends JpaRepository<Users, Long> {
-    Optional<Users> findUserByEmail(String email);
+public interface ImageRepository extends JpaRepository<Images, UUID> {
 }

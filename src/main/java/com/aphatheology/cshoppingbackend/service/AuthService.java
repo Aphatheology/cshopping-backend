@@ -30,7 +30,7 @@ public class AuthService {
     public Users map2Entity(UserDto userDto) {
         Users user = new Users();
         user.setEmail(userDto.getEmail());
-        user.setUsername(userDto.getUsername());
+        user.setFullname(userDto.getFullname());
         user.setRole(Role.USER);
         user.setPassword(this.passwordEncoder.encode(userDto.getPassword()));
 
@@ -38,9 +38,9 @@ public class AuthService {
     }
 
     public AuthenticationResponse register(UserDto registerBody) {
-        Optional<Users> existingUser = this.userRepository.findUserByEmailOrUsername(registerBody.getEmail(), registerBody.getUsername());
+        Optional<Users> existingUser = this.userRepository.findUserByEmail(registerBody.getEmail());
 
-        if (existingUser.isPresent()) throw new ExistingEmailException("User with this Email or Username already exist");
+        if (existingUser.isPresent()) throw new ExistingEmailException("User with this Email already exist");
 
         Users user = map2Entity(registerBody);
         this.userRepository.save(user);
@@ -48,7 +48,7 @@ public class AuthService {
         return AuthenticationResponse.builder()
                 .id(user.getId())
                 .email(user.getEmail())
-                .username(user.getUsername())
+                .fullname(user.getFullname())
                 .role(user.getRole())
                 .accessToken(this.jwtService.generateToken(user))
                 .build();
@@ -66,7 +66,7 @@ public class AuthService {
         return AuthenticationResponse.builder()
                 .id(user.getId())
                 .email(user.getEmail())
-                .username(user.getUsername())
+                .fullname(user.getFullname())
                 .role(user.getRole())
                 .accessToken(jwtToken)
                 .build();

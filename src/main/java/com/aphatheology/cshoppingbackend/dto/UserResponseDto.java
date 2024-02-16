@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class UserResponseDto {
     private Long id;
     private String email;
-    private String username;
+    private String fullname;
     private String role;
     private Boolean verified;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

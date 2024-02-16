@@ -26,7 +26,7 @@ public class UserService {
         UserResponseDto userResponseDto = new UserResponseDto();
         userResponseDto.setId(user.getId());
         userResponseDto.setEmail(user.getEmail());
-        userResponseDto.setUsername(user.getUsername());
+        userResponseDto.setFullname(user.getFullname());
         userResponseDto.setRole(user.getRole().toString());
         userResponseDto.setCreatedAt(user.getCreatedAt());
         userResponseDto.setUpdatedAt(user.getUpdatedAt());
@@ -36,7 +36,7 @@ public class UserService {
     public Users map2Entity(UserDto userDto) {
         Users user = new Users();
         user.setEmail(userDto.getEmail());
-        user.setUsername(userDto.getUsername());
+        user.setFullname(userDto.getFullname());
         user.setRole(Role.USER);
         user.setPassword(this.passwordEncoder.encode(userDto.getPassword()));
 
