@@ -3,7 +3,7 @@ package com.aphatheology.cshoppingbackend;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+@SpringBootTest(classes = CshoppingBackendApplicationTests.class)
 class CshoppingBackendApplicationTests {
 
 	@Test
