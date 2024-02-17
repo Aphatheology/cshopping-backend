@@ -26,7 +26,16 @@ public class Products {
 
     private String description;
 
-    private List<Tags> tags;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "products_tags",
+            joinColumns = {
+                    @JoinColumn(name = "product_id")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "tag_id")
+            })
+    @JsonIgnore
+    private Set<Tags> tags;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "products_images",
@@ -42,12 +51,21 @@ public class Products {
     @Transient
     private List<String> imagesUrl;
 
+    @Transient
+    private List<String> tagNames;
+
     @PostLoad
     @PostPersist
+    @PostUpdate
     public void setImagesUrl() {
         this.imagesUrl = new ArrayList<>();
         for (Images image : images) {
             this.imagesUrl.add(image.getUrl());
+        }
+
+        this.tagNames = new ArrayList<>();
+        for (Tags tag : tags) {
+            this.tagNames.add(tag.getName());
         }
     }
 }

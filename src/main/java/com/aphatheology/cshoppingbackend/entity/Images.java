@@ -20,5 +20,6 @@ public class Images {
     private String name;
     private String type;
     private String url;
+    private String cloudId;
 
 }

@@ -1,6 +1,7 @@
 package com.aphatheology.cshoppingbackend.service;
 
 import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,5 +27,9 @@ public class CloudinaryService {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public void deleteImage(String cloudId) throws IOException {
+        cloudinary.uploader().destroy(cloudId, ObjectUtils.emptyMap());
     }
 }
